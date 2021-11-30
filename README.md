@@ -5,11 +5,11 @@ In order to draw other things than cats, you will find more drawing data here: h
 
 bicycle:
 
-![](images/bicycle/output_uncond_epoch_40000_0_strokes_8.jpg)
+![](images/bicycle/output_uncond_epoch_40000_0_strokes_4.jpg)
 ![](images/bicycle/output_uncond_epoch_40000_1_strokes_4.jpg)
-![](images/bicycle/output_uncond_epoch_40000_2_strokes_6.jpg)
-![](images/bicycle/output_uncond_epoch_40000_3_strokes_6.jpg)
-![](images/bicycle/output_uncond_epoch_40000_4_strokes_6.jpg)
+![](images/bicycle/output_uncond_epoch_40000_2_strokes_5.jpg)
+![](images/bicycle/output_uncond_epoch_40000_3_strokes_4.jpg)
+![](images/bicycle/output_uncond_epoch_40000_4_strokes_4.jpg)
 
 butterfly:
 
