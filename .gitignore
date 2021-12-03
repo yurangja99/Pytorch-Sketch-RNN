@@ -1,2 +1,3 @@
 Pipfile
 run*
+**/__pycache__
