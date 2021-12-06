@@ -124,7 +124,8 @@ Actual implementation of this project is in ```codes``` directory.
 Using the code in ```codes``` directory, we implemented some clients that we can run directly. 
 - Using ```train_or_test.py```, we can train/test a new draw/predict model. 
 - Using ```draw_client.py```, we can use our draw model for unconditional generation of specific category. 
-- Using ```predict_client.py```, we can use our predict model for predicting the complete sketch and classifying it. 
+- Using ```predict_client_data.py```, we can use our predict model for predicting the complete sketch and classifying it. (using test data, generate incomplete sketches)
+- Using ```predict_client_sketch.py```, we can sketch any sketch, and let our predict model to predict the complete sketch and classification. (don't use any data, just draw your sketch!)
 
 ## How to use
 ### Train or Test models
@@ -182,11 +183,17 @@ Using the code in ```codes``` directory, we implemented some clients that we can
     - set ```self.categories``` and ```self.data_path_list``` to have 5 items as default. 
     - set ```self.encoder_path_list```, ```self.decoder_path_list``` to have 5 items as default. 
     - set ```self.encoder_path```, ```self.decoder_path_list```, and ```self.classifier_path``` as default. 
-    - set ```self.forget_ratio``` as you want. 
+    - set ```self.forget_ratio```. 
+        - if you want to run ```predict_client_data.py```, set it to 0.5. 
+        - if you want to run ```predict_client_sketch.py```, set it to 0.0. 
     
-3. Run [predict_client.py](predict_client.py)
+3. Run [predict_client_data.py](predict_client_data.py) or [predict_client_sketch.py](predict_client_sketch.py)
     ```
-    python -m predict_client.py
+    # to run with test data
+    python -m predict_client_data.py
+
+    # to run with your sketches
+    python -m predict_client_sketch.py
     ```
 
 

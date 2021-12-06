@@ -94,7 +94,7 @@ class Config():
       self.classifier_path = os.path.join('examples', 'predict', 'classifierFC_epoch_10000.pth')
 
       # ratio of forget sequences in data (for train, test, and client)
-      self.forget_ratio = 0.5
+      self.forget_ratio = 0.0
 
       # classifier structure
       self.cls_hidden_size = 128

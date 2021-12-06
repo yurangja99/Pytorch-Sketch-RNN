@@ -338,6 +338,6 @@ class DrawModel():
       config.train_output_dir if config.mode == 'train' else config.test_output_dir,
       'cond_images' if conditional else 'uncond_images'
     )
-    make_image(sequence, path, f'{name}_{label}', show=show, pos=(10, 10))
+    make_image(sequence, path, f'{name}_{label}', show=show, wait=3, pos=(10, 10))
     if show:
       plt.close('all')

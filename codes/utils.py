@@ -170,12 +170,11 @@ def sample_next_state(pi: torch.Tensor, mu_x: torch.Tensor, mu_y: torch.Tensor, 
   else:
     return next_state.view(1, 1, -1), x, y, q_idx == 1, q_idx == 2
 
-def make_image(seq: np.ndarray, path: str, name: str, show: bool, pos: Union[Tuple[int, int], None]=None) -> None:
+def make_image(seq: np.ndarray, path: str, name: str, show: bool, wait: Union[int, None]=None, pos: Union[Tuple[int, int], None]=None) -> None:
   '''Using given sequence (L, 3), draw a sketch and save it'''
   strokes = np.split(seq, np.where(seq[:, 2] > 0)[0] + 1)
   
   plt.figure()
-  plt.title(name)
 
   # if position is declared, set position
   plt.get_current_fig_manager().window.wm_geometry(f'+{pos[0]}+{pos[1]}')
@@ -190,7 +189,8 @@ def make_image(seq: np.ndarray, path: str, name: str, show: bool, pos: Union[Tup
       for i in range(s.shape[0] - 1):
         plt.pause(0.05)
         plt.plot(s[i:i + 2, 0], -s[i:i + 2, 1])
-    plt.pause(2.0)
+    if wait is not None and wait > 0:
+      plt.pause(wait)
   else:
     for s in strokes:
       plt.plot(s[:, 0], -s[:, 1])

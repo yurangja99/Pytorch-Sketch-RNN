@@ -191,7 +191,7 @@ class PredictModel():
       config.train_output_dir if config.mode == 'train' else config.test_output_dir,
       'images'
     )
-    make_image(seq_ori, path, f'{name}_label_{label_ori}', show=show, pos=(10, 10))
+    make_image(seq_ori, path, f'{name}_label_{label_ori}', show=show, wait=0, pos=(10, 10))
 
     # calculate z and predict label
     z, _, _ = self.encoder(batch, 1)
@@ -246,7 +246,7 @@ class PredictModel():
     z_pred = np.array(seq_z)
     seq_pred = np.stack([x_pred, y_pred, z_pred]).T
     correct_pred = 'correct' if label_ori == label_pred else 'wrong'
-    make_image(seq_pred, path, f'{name}_label_{label_ori}_pred_{label_pred}_{correct_pred}', show=show, pos=(670, 10))
+    make_image(seq_pred, path, f'{name}_label_{label_ori}_pred_{label_pred}_{correct_pred}', show=show, wait=3, pos=(670, 10))
     if show:
       plt.close('all')
 
