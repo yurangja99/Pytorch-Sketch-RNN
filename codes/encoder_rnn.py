@@ -52,18 +52,5 @@ class EncoderRNN(nn.Module):
     
     # compute context vector
     z = mu + sigma * noise
-    '''
-    if torch.any(torch.isnan(z)):
-      print('ENCODER NAN!')
-      print('mu is nan', torch.any(torch.isnan(mu)))
-      print('sigma is nan', torch.any(torch.isnan(sigma)))
-      print('sigma_hat is nan', torch.any(torch.isnan(sigma_hat)))
-      print('noise is nan', torch.any(torch.isnan(noise)))
-      print('hidden is nan', torch.any(torch.isnan(hidden)))
-      print(hidden[torch.where(torch.isnan(hidden))])
-      print('inputs is nan', torch.any(torch.isnan(inputs)), inputs.shape)
-      if hidden_cell is not None:
-        print('hidden_cell is nan', torch.any(torch.isnan(hidden_cell[0])), torch.any(torch.isnan(hidden_cell[1])))
-      raise Exception
-    '''
+
     return z, mu, sigma_hat

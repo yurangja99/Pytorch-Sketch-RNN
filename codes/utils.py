@@ -1,9 +1,10 @@
 import torch
 import numpy as np
-from typing import List, Tuple
+from typing import List, Tuple, Union
 import matplotlib.pyplot as plt
 import PIL
 import os
+from random import randint
 
 from codes.config import Config
 
@@ -57,12 +58,14 @@ def normalize(data: List[List[np.ndarray]]) -> List[List[np.ndarray]]:
     normalized_data.append(normalized_seqs)
   return normalized_data
 
-def make_batch(data: List[List[np.ndarray]], batch_size: int, Nmax: int) -> Tuple[torch.Tensor, List[int], torch.Tensor]:
+def make_batch(data: List[List[np.ndarray]], batch_size: int, Nmax: int, forget_ratio: Union[float, None]=None) -> Tuple[torch.Tensor, List[int], torch.Tensor]:
   '''
   In the given data, select batch_size random items and their labels. 
   - If batch_size is 1, pick one item. 
   - Otherwise, (batch_size // len(data)) items are selected randomly from each category. 
     (batch_size should be multiple of number of categories)
+
+  If forget_ratio is not None, forget the later sequence about given ratio. 
   '''
   num_categories = len(data)
   assert batch_size == 1 or batch_size % num_categories == 0
@@ -82,7 +85,18 @@ def make_batch(data: List[List[np.ndarray]], batch_size: int, Nmax: int) -> Tupl
       category_idx += [i for _ in range(batch_size // num_categories)]
       batch_idx += idx.tolist()
 
-  batch_seqs = [data[cidx][bidx] for cidx, bidx in zip(category_idx, batch_idx)]
+  if forget_ratio is None:
+    batch_seqs = [data[cidx][bidx] for cidx, bidx in zip(category_idx, batch_idx)]
+  else:
+    batch_seqs = []
+    for cidx, bidx in zip(category_idx, batch_idx):
+      length = data[cidx][bidx].shape[0]
+      if length * (1.0 - forget_ratio) > 2:
+        idx = randint(round(length * (1 - forget_ratio)), length)
+      else:
+        idx = length
+      batch_seqs.append(data[cidx][bidx][:idx, :])
+
   seqs = []
   lengths = []
   for seq in batch_seqs:
@@ -156,10 +170,16 @@ def sample_next_state(pi: torch.Tensor, mu_x: torch.Tensor, mu_y: torch.Tensor, 
   else:
     return next_state.view(1, 1, -1), x, y, q_idx == 1, q_idx == 2
 
-def make_image(seq: np.ndarray, path: str, name: str, show: bool) -> None:
+def make_image(seq: np.ndarray, path: str, name: str, show: bool, pos: Union[Tuple[int, int], None]=None) -> None:
   '''Using given sequence (L, 3), draw a sketch and save it'''
   strokes = np.split(seq, np.where(seq[:, 2] > 0)[0] + 1)
+  
   plt.figure()
+  plt.title(name)
+
+  # if position is declared, set position
+  plt.get_current_fig_manager().window.wm_geometry(f'+{pos[0]}+{pos[1]}')
+
   x_max, x_min = np.max(seq[:, 0]), np.min(seq[:, 0])
   y_max, y_min = -np.min(seq[:, 1]), -np.max(seq[:, 1])
   plt.xlim(x_min - (x_max - x_min) * 0.1, x_max + (x_max - x_min) * 0.1)
@@ -170,7 +190,7 @@ def make_image(seq: np.ndarray, path: str, name: str, show: bool) -> None:
       for i in range(s.shape[0] - 1):
         plt.pause(0.05)
         plt.plot(s[i:i + 2, 0], -s[i:i + 2, 1])
-    plt.pause(3.0)
+    plt.pause(2.0)
   else:
     for s in strokes:
       plt.plot(s[:, 0], -s[:, 1])

@@ -73,8 +73,8 @@ if __name__ == '__main__':
   else:
     model = PredictModel()
     if config.mode == 'train':
-      model.load(config.encoder_path, config.decoder_path, None)
+      model.load(None, config.decoder_path_list, None)
       model.train(train_data, train_Nmax, val_data, val_Nmax)
     else:
-      model.load(config.encoder_path, config.decoder_path, config.classifier_path)
+      model.load(config.encoder_path, config.decoder_path_list, config.classifier_path)
       model.test(test_data, test_Nmax)

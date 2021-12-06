@@ -12,7 +12,7 @@ class ClassifierFC(nn.Module):
     super(ClassifierFC, self).__init__()
 
     # get number of categories
-    self.num_categories = len(config.data_path_list)
+    self.num_categories = len(config.categories)
 
     # feature extractors
     self.fc1 = nn.Linear(config.Nz, config.cls_hidden_size)

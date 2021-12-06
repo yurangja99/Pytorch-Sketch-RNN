@@ -1,5 +1,4 @@
 import torch
-import json
 import os
 
 class Config():
@@ -9,20 +8,23 @@ class Config():
   '''
   def __init__(self) -> None:
     self.task = 'draw' # 'draw' or 'predict'
-    self.mode = 'train' # 'train' or 'test' or 'client'
-    self.train_output_dir = 'run_train_draw_bicycle'
-    self.test_output_dir = ''
+    self.mode = 'client' # 'train' or 'test' or 'client'
+    self.train_output_dir = ''
+    self.test_output_dir = 'run_0'
 
     # use cuda?
     self.use_cuda = torch.cuda.is_available()
     
+    # categories
+    self.categories = ['bicycle', 'clock', 'hand', 'spider', 'sun']
+
     # dataset and preprocessing
     self.data_path_list = [
       os.path.join('datasets', 'sketchrnn_bicycle.full.npz'),
-      #os.path.join('datasets', 'sketchrnn_clock.full.npz'),
-      #os.path.join('datasets', 'sketchrnn_hand.full.npz'),
-      #os.path.join('datasets', 'sketchrnn_spider.full.npz'),
-      #os.path.join('datasets', 'sketchrnn_sun.full.npz')
+      os.path.join('datasets', 'sketchrnn_clock.full.npz'),
+      os.path.join('datasets', 'sketchrnn_hand.full.npz'),
+      os.path.join('datasets', 'sketchrnn_spider.full.npz'),
+      os.path.join('datasets', 'sketchrnn_sun.full.npz')
     ]
     self.max_seq_length = 200
 
@@ -36,7 +38,7 @@ class Config():
     self.M = 20
     
     # training config
-    self.max_epoch = 15001
+    self.max_epoch = 10001
     self.batch_size = 100
     self.lr = 0.001
     self.lr_decay = 0.9999
@@ -74,14 +76,25 @@ class Config():
         os.path.join('examples', 'draw', 'sun', 'decoderRNN_epoch_10000.pth')
       ]
     else:
-      # path to encoder and decoder model to use (freezed, not trained)
-      self.encoder_path = os.path.join('examples', 'predict', 'epoch_40000', 'encoderRNN_epoch_40000.pth')
-      self.decoder_path = os.path.join('examples', 'predict', 'epoch_40000', 'decoderRNN_epoch_40000.pth')
+      # path to encoder to test or for client
+      #self.encoder_path = os.path.join(self.train_output_dir, 'models', 'encoderRNN_epoch_10000.pth')
+      self.encoder_path = os.path.join('examples', 'predict', 'encoderRNN_epoch_10000.pth')
+
+      # path to decoders (for train, test, and client)
+      self.decoder_path_list = [
+        os.path.join('examples', 'draw', 'bicycle', 'decoderRNN_epoch_20000.pth'),
+        os.path.join('examples', 'draw', 'clock', 'decoderRNN_epoch_10000.pth'),
+        os.path.join('examples', 'draw', 'hand', 'decoderRNN_epoch_10000.pth'),
+        os.path.join('examples', 'draw', 'spider', 'decoderRNN_epoch_10000.pth'),
+        os.path.join('examples', 'draw', 'sun', 'decoderRNN_epoch_10000.pth')
+      ]
       
-      # path to classifier model to test
+      # path to classifier model to test or for client
       #self.classifier_path = os.path.join(self.train_output_dir, 'models', 'classifierFC_epoch_10000.pth')
-      # for client
-      self.classifier_path = os.path.join('examples', 'predict', 'epoch_40000', 'classifierFC_epoch_10000.pth')
+      self.classifier_path = os.path.join('examples', 'predict', 'classifierFC_epoch_10000.pth')
+
+      # ratio of forget sequences in data (for train, test, and client)
+      self.forget_ratio = 0.5
 
       # classifier structure
       self.cls_hidden_size = 128
@@ -90,6 +103,10 @@ class Config():
     # assertions
     assert self.task in ['draw', 'predict']
     assert self.mode in ['train', 'test', 'client']
+
+    assert len(self.categories) == len(self.data_path_list)
+    assert not hasattr(self, 'encoder_path_list') or len(self.categories) == len(self.encoder_path_list)
+    assert not hasattr(self, 'decoder_path_list') or len(self.categories) == len(self.decoder_path_list)
     
     if self.mode == 'train':
       # train output directory should not exist

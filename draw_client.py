@@ -24,16 +24,14 @@ with open(os.path.join(config.test_output_dir, 'config.json'), 'w') as f:
   json.dump(config.__dict__, f, indent=2)
 
 if __name__ == '__main__':
-  categories = ['bicycle', 'clock', 'hand', 'spider', 'sun']
-  
   assert config.task == 'draw'
   assert config.mode == 'client'
-  assert len(config.encoder_path_list) == len(categories)
-  assert len(config.decoder_path_list) == len(categories)
+  assert len(config.encoder_path_list) == len(config.categories)
+  assert len(config.decoder_path_list) == len(config.categories)
 
   # load models for each category
   models = []
-  for i in range(len(categories)):
+  for i in range(len(config.categories)):
     model = DrawModel()
     model.load(config.encoder_path_list[i], config.decoder_path_list[i])
     models.append(model)
@@ -41,7 +39,7 @@ if __name__ == '__main__':
   # start drawing
   for i in range(10000):
     # print list of categories
-    for idx, category in enumerate(categories):
+    for idx, category in enumerate(config.categories):
       print(f'{idx + 1}. {category}')
     
     # get input and validation
@@ -49,14 +47,14 @@ if __name__ == '__main__':
     if selected == 'q':
       break
     selected = int(selected)
-    if selected < 1 or selected > len(categories):
+    if selected < 1 or selected > len(config.categories):
       print('Out of range!')
       continue
 
     # generate
     models[selected - 1].generate(
       None, config.max_seq_length, 
-      f'{i}_{categories[selected - 1]}', 
+      f'{i}_{config.categories[selected - 1]}', 
       conditional=False,
       show=True
     )

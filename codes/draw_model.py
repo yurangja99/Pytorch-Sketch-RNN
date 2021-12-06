@@ -93,13 +93,6 @@ class DrawModel():
         train_sigma_x, train_sigma_y, 
         train_rho_xy, train_q, train_Nmax
       )
-      '''
-      if torch.any(torch.isnan(train_LKL)) or torch.any(torch.isnan(train_LR)):
-        print('LOSS NAN!')
-        print('LKL nan', torch.any(torch.isnan(train_LKL)))
-        print('LR nan', torch.any(torch.isnan(train_LR)))
-        raise Exception
-      '''
       train_loss = train_LKL + train_LR
       train_LKL_history.append(train_LKL.data.cpu().item())
       train_LR_history.append(train_LR.data.cpu().item())
@@ -291,14 +284,7 @@ class DrawModel():
     pdf = bivariate_normal_pdf(dx, dy, mu_x, mu_y, sigma_x, sigma_y, rho_xy)
     loss_LS = -torch.sum(mask * torch.log(1e-5 + torch.sum(pi * pdf, dim=2))) / float(Nmax * config.batch_size)
     loss_LP = -torch.sum(p * torch.log(q)) / float(Nmax * config.batch_size)
-    '''
-    if torch.any(torch.isnan(pdf)) or torch.any(torch.isnan(loss_LS)) or torch.any(torch.isnan(loss_LP)):
-      print('LOSS NAN!')
-      print('pdf is nan', torch.any(torch.isnan(pdf)))
-      print('LOSS LS is nan', torch.any(torch.isnan(loss_LS)))
-      print('LOSS LP is nan', torch.any(torch.isnan(loss_LP)))
-      raise Exception
-    '''
+
     return loss_LS + loss_LP
 
   def generate(self, data: Union[List[List[np.ndarray]], None], Nmax: int, name: str, conditional: bool=False, show: bool=False) -> None:
@@ -352,6 +338,6 @@ class DrawModel():
       config.train_output_dir if config.mode == 'train' else config.test_output_dir,
       'cond_images' if conditional else 'uncond_images'
     )
-    make_image(sequence, path, f'{name}_{label}', show=show)
+    make_image(sequence, path, f'{name}_{label}', show=show, pos=(10, 10))
     if show:
       plt.close('all')

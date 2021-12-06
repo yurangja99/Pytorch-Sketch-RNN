@@ -50,18 +50,7 @@ class DecoderRNN(nn.Module):
       len_out = Nmax + 1
     else:
       len_out = 1
-    '''
-    if torch.any(torch.isnan(pi)):
-      print('DECODER NAN!')
-      print('y is nan', torch.any(torch.isnan(y)))
-      print('outputs is nan', torch.any(torch.isnan(outputs)))
-      print('hidden is nan', torch.any(torch.isnan(hidden)))
-      print('inputs is nan', torch.any(torch.isnan(inputs)))
-      print('z is nan', torch.any(torch.isnan(z)))
-      if hidden_cell is not None:
-        print('hidden_cell is nan', torch.any(torch.isnan(hidden_cell[0])), torch.any(torch.isnan(hidden_cell[1])))
-      raise Exception
-    '''
+
     pi = F.softmax(pi.transpose(0, 1).squeeze(), dim=-1).view(len_out, -1, config.M)
     sigma_x = torch.exp(sigma_x.transpose(0, 1).squeeze()).view(len_out, -1, config.M)
     sigma_y = torch.exp(sigma_y.transpose(0, 1).squeeze()).view(len_out, -1, config.M)
