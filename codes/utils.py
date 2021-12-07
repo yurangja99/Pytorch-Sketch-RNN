@@ -181,8 +181,9 @@ def make_image(seq: np.ndarray, path: str, name: str, show: bool, wait: Union[in
 
   x_max, x_min = np.max(seq[:, 0]), np.min(seq[:, 0])
   y_max, y_min = -np.min(seq[:, 1]), -np.max(seq[:, 1])
-  plt.xlim(x_min - (x_max - x_min) * 0.1, x_max + (x_max - x_min) * 0.1)
-  plt.ylim(y_min - (y_max - y_min) * 0.1, y_max + (y_max - y_min) * 0.1)
+  axis_range = max(x_max - x_min, y_max - y_min)
+  plt.xlim((x_min + x_max) / 2.0 - axis_range * 0.6, (x_min + x_max) / 2.0 + axis_range * 0.6)
+  plt.ylim((y_min + y_max) / 2.0 - axis_range * 0.6, (y_min + y_max) / 2.0 + axis_range * 0.6)
 
   if show:
     for s in strokes:
