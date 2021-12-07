@@ -44,7 +44,7 @@ def get_user_sketch() -> List[List[int]]:
       points.append([event.x, event.y, 0])
     else:
       px, py, ps = points[-1]
-      if (px - event.x) ** 2 + (py - event.y) ** 2 >= d2_threshold:
+      if len(points) < config.max_seq_length and (px - event.x) ** 2 + (py - event.y) ** 2 >= d2_threshold:
         points.append([event.x, event.y, 0])
         if ps == 0:
           canvas.create_line(px, py, event.x, event.y, width=2)
@@ -101,7 +101,10 @@ if __name__ == '__main__':
     
     # print prediction result (correct or not)
     pred = np.argmax(preds, axis=-1)
-    print(f'Did you draw {config.categories[pred]}?')
+    if preds[pred] >= config.cls_ood_threshold:
+      print(f'Did you draw {config.categories[pred]}?')
+    else:
+      print('What did you draw? I have no idea...')
 
     quit = input('\nContinue? (q for quit): ')
     if quit == 'q':

@@ -99,6 +99,8 @@ class Config():
       # classifier structure
       self.cls_hidden_size = 128
       self.cls_dropout = 0.8
+      self.cls_temperature = 2.5
+      self.cls_ood_threshold = 0.8
 
     # assertions
     assert self.task in ['draw', 'predict']

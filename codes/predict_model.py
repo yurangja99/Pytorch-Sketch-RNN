@@ -250,4 +250,4 @@ class PredictModel():
     if show:
       plt.close('all')
 
-    return F.softmax(preds, dim=-1).detach().cpu().numpy()
+    return F.softmax(preds / config.cls_temperature, dim=-1).detach().cpu().numpy()
