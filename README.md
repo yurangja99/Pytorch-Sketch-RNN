@@ -1,5 +1,9 @@
 # Sketch RNN using PyTorch
 
+|bicycle|sun|
+|---|---|
+|![](examples/draw/bicycle/bicycle_4.gif)|![](examples/draw/sun/sun_1.gif)|
+
 ## Abstract
 - To be written
 
@@ -31,32 +35,25 @@ We used five categories: bicycle, clock, hand, spider, and sun.
 
 ### Draw model
 First, we trained draw models for each category. Train losses are shown below. 
-- bicycle
 
-    ![](examples/draw/bicycle/train_loss_epoch_40000.jpg)
+|bicycle|clock|hand|
+|---|---|---|
+|![](examples/draw/bicycle/train_loss_epoch_40000.jpg)|![](examples/draw/clock/train_loss_epoch_40000.jpg)|![](examples/draw/hand/train_loss_epoch_40000.jpg)|
 
-- clock
-
-    ![](examples/draw/clock/train_loss_epoch_40000.jpg)
-
-- hand
-
-    ![](examples/draw/hand/train_loss_epoch_40000.jpg)
-
-- spider
-
-    ![](examples/draw/spider/train_loss_epoch_40000.jpg)
-
-- sun
-
-    ![](examples/draw/sun/train_loss_epoch_40000.jpg)
+|spider|sun|
+|---|---|
+|![](examples/draw/spider/train_loss_epoch_40000.jpg)|![](examples/draw/sun/train_loss_epoch_40000.jpg)|
 
 ### Predict model
 Next, we trained general encoder and FC classification layer using all data of five categories. 
 
 Input sequence might be incomplete in some case, so I masked 0% to 50% end of each sequence. I call it ```forget_ratio```, and it is determined randomly between 0% and 50%. 
 
-After training, I tested the model 10 times, each consists of 10000 incomplete/complete sketches. I could achieve 95.8% test accuracy (0.17% std) The exact test accuracies and test losses are shown below. 
+|loss|accuracy|
+|---|---|
+|![](examples/predict/loss_epoch_10000.jpg)|![](examples/predict/acc_epoch_10000.jpg)|
+
+After training, I tested the model 10 times, each consists of 10000 incomplete/complete sketches. I could achieve 95.8% test accuracy (0.17% std) The exact test accuracies and test losses are shown below. (from [this](examples/predict/test_results.json))
 
 |Test|Loss|Accuracy|
 |---|---|---|
@@ -75,37 +72,82 @@ After training, I tested the model 10 times, each consists of 10000 incomplete/c
 
 ## Examples
 ### Draw model
-- bicycle
-    
-    ![](examples/draw/bicycle/output_1_bicycle_uncond_strokes_4.jpg)
-    ![](examples/draw/bicycle/output_3_bicycle_uncond_strokes_4.jpg)
+- bicycle (see all examples in [here](examples/draw/bicycle))
+    |||
+    |---|---|
+    |![](examples/draw/bicycle/bicycle_0.jpg)|![](examples/draw/bicycle/bicycle_0.gif)|
 
-- clock
-    
-    ![](examples/draw/clock/output_8_clock_uncond_strokes_3.jpg)
-    ![](examples/draw/clock/output_9_clock_uncond_strokes_5.jpg)
+- clock (see all examples in [here](examples/draw/clock))
+    |||
+    |---|---|
+    |![](examples/draw/clock/clock_0.jpg)|![](examples/draw/clock/clock_0.gif)|
 
-- hand
+- hand (see all examples in [here](examples/draw/hand))
+    |||
+    |---|---|
+    |![](examples/draw/hand/hand_0.jpg)|![](examples/draw/hand/hand_0.gif)|
 
-    ![](examples/draw/hand/output_12_hand_uncond_strokes_1.jpg)
-    ![](examples/draw/hand/output_14_hand_uncond_strokes_1.jpg)
+- spider (see all examples in [here](examples/draw/spider))
+    |||
+    |---|---|
+    |![](examples/draw/spider/spider_0.jpg)|![](examples/draw/spider/spider_0.gif)|
 
-- spider
-
-    ![](examples/draw/spider/output_15_spider_uncond_strokes_8.jpg)
-    ![](examples/draw/spider/output_19_spider_uncond_strokes_7.jpg)
-
-- sun
-
-    ![](examples/draw/sun/output_20_sun_uncond_strokes_10.jpg)
-    ![](examples/draw/sun/output_21_sun_uncond_strokes_8.jpg)
+- sun (see all examples in [here](examples/draw/sun))
+    |||
+    |---|---|
+    |![](examples/draw/sun/sun_0.jpg)|![](examples/draw/sun/sun_0.gif)|
 
 ### Predict model
-- bicycle
-- clock
-- hand
-- spider
-- sun
+- bicycle (see all examples in [here](examples/predict/bicycle))
+    - top1: bicycle (0.9986081719398499)
+    - top2: spider (0.0008487682789564133)
+
+    |input sketch by user|predicted sketch by predict client|
+    |---|---|
+    |![](examples/predict/bicycle/incom_bicycle_input.gif)|![](examples/predict/bicycle/incom_bicycle_pred.gif)|
+    
+- clock (see all examples in [here](examples/predict/clock))
+    - top1: clock (0.8678318858146667)
+    - top2: hand (0.07294004410505295)
+    
+    |input sketch by user|predicted sketch by predict client|
+    |---|---|
+    |![](examples/predict/clock/incom_clock_input.gif)|![](examples/predict/clock/incom_clock_pred.gif)|
+
+- hand (see all examples in [here](examples/predict/hand))
+    - top1: hand (0.9999791383743286)
+    - top2: clock (1.642086135689169e-05)
+    
+    |input sketch by user|predicted sketch by predict client|
+    |---|---|
+    |![](examples/predict/hand/incom_hand_input.gif)|![](examples/predict/hand/incom_hand_pred.gif)|
+
+- spider (see all examples in [here](examples/predict/spider))
+    - top1: spider (0.9865385293960571)
+    - top2: sun (0.009002521634101868)
+
+    |input sketch by user|predicted sketch by predict client|
+    |---|---|
+    |![](examples/predict/spider/incom_spider_input.gif)|![](examples/predict/spider/incom_spider_pred.gif)|
+
+- sun (see all examples in [here](examples/predict/sun))
+    - top1: sun (0.9043053984642029)
+    - top2: spider (0.06436137109994888)
+    
+    |input sketch by user|predicted sketch by predict client|
+    |---|---|
+    |![](examples/predict/sun/incom_sun_input.gif)|![](examples/predict/sun/incom_sun_pred.gif)|
+
+- out of distribution (see all examples in [here](examples/predict/ood))
+    - top1: hand (0.4482879936695099)
+    - top2: spider (0.17212322354316711)
+    - top3: bicycle (0.16263628005981445)
+    - top4: clock (0.15978890657424927)
+    - top5: sun (0.0571635439991951)
+
+    |input sketch by user|predicted sketch by predict client|
+    |---|---|
+    |![](examples/predict/ood/ood_input.gif)|![](examples/predict/ood/ood_pred.gif)|
 
 ## Code structure
 In ```examples``` directory, there are some pretrained models and sample images thos are shown in this README document. You can use these pretrained model after reading [instruction](#how-to-use) carefully. 
@@ -196,9 +238,9 @@ Using the code in ```codes``` directory, we implemented some clients that we can
     python -m predict_client_sketch.py
     ```
 
-
 ## References
 - Original paper: https://arxiv.org/abs/1704.03477
 - Forked from: https://github.com/alexis-jacq/Pytorch-Sketch-RNN.git
 - Datasets: https://github.com/googlecreativelab/quickdraw-dataset
+- Out-of-distribution: https://arxiv.org/pdf/1503.02531.pdf
 - Hyperparameters: https://github.com/tensorflow/magenta/blob/master/magenta/models/sketch_rnn/README.md
