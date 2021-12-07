@@ -85,6 +85,8 @@ if __name__ == '__main__':
   model = PredictModel()
   model.load(config.encoder_path, config.decoder_path_list, config.classifier_path)
 
+  result = dict()
+
   # start predicting
   for i in range(10000):
     # get data from user sketch
@@ -100,7 +102,8 @@ if __name__ == '__main__':
       print(f'{category:7s}: {preds[idx]:4.3f} {"*" * round(preds[idx] * 100)}')
     
     # print prediction result (correct or not)
-    pred = np.argmax(preds, axis=-1)
+    pred = int(np.argmax(preds, axis=-1))
+    result[str(i)] = dict(preds=preds, top1=pred)
     if preds[pred] >= config.cls_ood_threshold:
       print(f'Did you draw {config.categories[pred]}?')
     else:
@@ -109,3 +112,7 @@ if __name__ == '__main__':
     quit = input('\nContinue? (q for quit): ')
     if quit == 'q':
       break
+  
+  # save result
+  with open(os.path.join(config.test_output_dir, 'result.json'), 'w') as f:
+    json.dump(result, f, indent=2)
